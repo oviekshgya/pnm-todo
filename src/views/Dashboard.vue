@@ -87,8 +87,7 @@
                 <div class="bg-white p-6 rounded-lg shadow-lg max-w-sm w-full">
                     <h3 class="text-xl font-bold mb-4">Are you sure you want to delete this product?</h3>
                     <div class="flex justify-between">
-                        <button @click="deleteProduct" class="bg-red-600 text-white py-2 px-4 rounded-lg">Yes,
-                            Delete</button>
+                        <button @click="confirmDelete(product)" class="text-red-600 hover:underline">Delete</button>
                         <button @click="showConfirmDelete = false"
                             class="bg-gray-300 text-black py-2 px-4 rounded-lg">Cancel</button>
                     </div>
@@ -107,6 +106,22 @@
     <span class="text-emerald-700 font-medium">Logging out...</span>
   </div>
 </div>
+
+<div v-if="showConfirmDelete" class="fixed inset-0 flex justify-center items-center bg-black bg-opacity-50">
+    <div class="bg-white p-6 rounded-lg shadow-lg max-w-sm w-full">
+        <h3 class="text-xl font-bold mb-4 text-red-600">Confirm Deletion</h3>
+        <p class="mb-4">Are you sure you want to delete <strong>{{ productToDelete?.name }}</strong>?</p>
+        <div class="flex justify-between">
+            <button @click="deleteProduct" class="bg-red-600 text-white py-2 px-4 rounded-lg hover:bg-red-700">
+                Yes, Delete
+            </button>
+            <button @click="showConfirmDelete = false" class="bg-gray-300 text-black py-2 px-4 rounded-lg">
+                Cancel
+            </button>
+        </div>
+    </div>
+</div>
+
 
 </template>
 
@@ -209,12 +224,38 @@ const confirmDelete = (id: number) => {
     showConfirmDelete.value = true
 }
 
-const deleteProduct = () => {
-    if (productToDelete.value !== null) {
-        products.value = products.value.filter(product => product.id !== productToDelete.value)
+const deleteProduct = async () => {
+    if (!productToDelete.value) return
+
+    try {
+        const response = await fetch('http://localhost:3000/v.01/product/delete', {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-API-KEY': 'pnm',
+                'Authorization': `Bearer ${token}`,
+            },
+            body: JSON.stringify({
+                id: productToDelete.value.id,
+                name: productToDelete.value.name,
+                jumlah: productToDelete.value.quantity
+            })
+        })
+
+        if (!response.ok) {
+            throw new Error('Gagal menghapus produk')
+        }
+
+        const index = products.value.findIndex(p => p.id === productToDelete.value.id)
+        if (index !== -1) {
+            products.value.splice(index, 1)
+        }
+
+        showConfirmDelete.value = false
+        productToDelete.value = null
+    } catch (error) {
+        console.error('Error saat menghapus produk:', error)
     }
-    showConfirmDelete.value = false
-    productToDelete.value = null
 }
 
 const filteredProducts = computed(() => {
@@ -268,6 +309,9 @@ const logout = () => {
         router.replace('/') 
     }, 1500)
 }
+
+
+
 
 </script>
 
