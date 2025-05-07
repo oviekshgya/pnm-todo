@@ -92,6 +92,14 @@
 import { ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { watch } from 'vue'
+import { onMounted } from 'vue'
+
+onMounted(() => {
+  const token = localStorage.getItem('accessToken')
+  if (token) {
+    router.replace('/home')
+  }
+})
 
 const name = ref('')
 const email = ref('')
