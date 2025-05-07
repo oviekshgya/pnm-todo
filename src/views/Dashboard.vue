@@ -114,11 +114,15 @@
 import { ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { onMounted } from 'vue'
+import axios from 'axios'
+
 
 onMounted(() => {
     const token = localStorage.getItem('accessToken')
     if (!token) {
-        router.replace('/') 
+        router.replace('/')
+    } else {
+        fetchProductsFromAPI()
     }
 })
 
@@ -140,6 +144,30 @@ const showConfirmDelete = ref(false)
 const productToDelete = ref<number | null>(null)
 const currentPage = ref(1)
 const itemsPerPage = 5
+
+const fetchProductsFromAPI = async () => {
+    const token = localStorage.getItem('accessToken')
+    try {
+        const response = await axios.get('http://localhost:3000/v.01/product?page=1&pageSize=10&id=0&search', {
+            headers: {
+                'X-API-KEY': 'pnm',
+                'Authorization': `Bearer ${token}`,
+            }
+        })
+
+        const apiData = response.data.data.data
+
+        products.value = apiData.map((item: any) => ({
+            id: item.id,
+            name: item.name,
+            quantity: item.jumlah,
+            created_at: item.created_at
+        }))
+    } catch (error) {
+        console.error('Failed to fetch products:', error)
+    }
+}
+
 
 const addProduct = (name: string, quantity: number) => {
     const newProductItem = {
