@@ -144,9 +144,10 @@ const showConfirmDelete = ref(false)
 const productToDelete = ref<number | null>(null)
 const currentPage = ref(1)
 const itemsPerPage = 5
+const token = localStorage.getItem('accessToken')
 
 const fetchProductsFromAPI = async () => {
-    const token = localStorage.getItem('accessToken')
+   
     try {
         const response = await axios.get('http://localhost:3000/v.01/product?page=1&pageSize=10&id=0&search', {
             headers: {
@@ -168,15 +169,31 @@ const fetchProductsFromAPI = async () => {
     }
 }
 
-
-const addProduct = (name: string, quantity: number) => {
+const addProduct = async (name: string, quantity: number) => {
     const newProductItem = {
         id: products.value.length + 1,
         name,
         quantity,
         created_at: new Date().toISOString(),
     }
+    
     products.value.push(newProductItem)
+
+    try {
+        await axios.post('http://localhost:3000/v.01/product/create', {
+            name,
+            jumlah: quantity
+        }, {
+            headers: {
+                'Content-Type': 'application/json',
+                'X-API-KEY': 'pnm',
+                'Authorization': `Bearer ${token}`,
+            }
+        })
+        console.log('Produk berhasil dikirim ke backend.')
+    } catch (error) {
+        console.error('Gagal mengirim produk ke backend:', error)
+    }
 }
 
 const handleCreateProduct = () => {
