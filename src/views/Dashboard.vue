@@ -58,7 +58,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="(product, index) in paginatedProducts" :key="product.id" class="border-b">
+                    <tr v-for="(product) in paginatedProducts" :key="product.id" class="border-b">
                         <td class="px-4 py-2">{{ product.name }}</td>
                         <td class="px-4 py-2">{{ product.quantity }}</td>
                         <td class="px-4 py-2">{{ formatDate(product.created_at) }}</td>
@@ -81,12 +81,11 @@
                     Next
                 </button>
             </div>
-
             <div v-if="showConfirmDelete" class="fixed inset-0 flex justify-center items-center bg-black bg-opacity-50">
                 <div class="bg-white p-6 rounded-lg shadow-lg max-w-sm w-full">
                     <h3 class="text-xl font-bold mb-4">Are you sure you want to delete this product?</h3>
                     <div class="flex justify-between">
-                        <button @click="confirmDelete(product)" class="text-red-600 hover:underline">Delete</button>
+                        <button @click="deleteProduct()" class="text-red-600 hover:underline">Delete</button>
                         <button @click="showConfirmDelete = false"
                             class="bg-gray-300 text-black py-2 px-4 rounded-lg">Cancel</button>
                     </div>
