@@ -78,6 +78,14 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
+import { onMounted } from 'vue'
+
+onMounted(() => {
+    const token = localStorage.getItem('accessToken')
+    if (token) {
+        router.replace('/home') 
+    }
+})
 
 const router = useRouter()
 
@@ -87,17 +95,44 @@ const showPassword = ref(false)
 const loginError = ref(false)
 const isLoading = ref(false)
 
-const handleLogin = () => {
-  if (email.value === 'admin@example.com' && password.value === '123456') {
-    loginError.value = false
-    isLoading.value = true
+const handleLogin = async () => {
+  loginError.value = false
+  isLoading.value = true
 
-    setTimeout(() => {
+  try {
+    const response = await fetch('http://localhost:3000/v.01/login', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-API-KEY': 'pnm',
+        'Authorization': 'Basic cG5tOnBubTEyMw=='
+      },
+      body: JSON.stringify({
+        email: email.value,
+        password: password.value
+      })
+    })
+
+    const result = await response.json()
+
+    if (!response.ok || result.error) {
+      loginError.value = true
       isLoading.value = false
-      router.push('/home')
-    }, 1500)
-  } else {
+      return
+    }
+
+    // Simpan token ke localStorage
+    localStorage.setItem('accessToken', result.data.accessToken)
+    localStorage.setItem('refreshToken', result.data.refreshToken)
+
+    // Redirect ke halaman home
+    router.push('/home')
+  } catch (error) {
+    console.error('Login error:', error)
     loginError.value = true
+  } finally {
+    isLoading.value = false
   }
 }
+
 </script>

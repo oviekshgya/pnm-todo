@@ -113,6 +113,14 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
+import { onMounted } from 'vue'
+
+onMounted(() => {
+    const token = localStorage.getItem('accessToken')
+    if (!token) {
+        router.replace('/') 
+    }
+})
 
 const router = useRouter()
 
@@ -206,12 +214,16 @@ const formatDate = (date: string) => {
 const isLoggingOut = ref(false)
 
 const logout = () => {
-    isLoggingOut.value = true
+    isLoggingOut.value = true      
+    localStorage.removeItem('accessToken')
+    localStorage.removeItem('refreshToken')
+
     setTimeout(() => {
         isLoggingOut.value = false
-        router.push('/') 
+        router.replace('/') 
     }, 1500)
 }
+
 </script>
 
 <style scoped></style>
