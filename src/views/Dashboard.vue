@@ -64,8 +64,7 @@
                         <td class="px-4 py-2">{{ formatDate(product.created_at) }}</td>
                         <td class="px-4 py-2 flex gap-2">
                             <button @click="editProduct(product)" class="text-blue-600 hover:underline">Edit</button>
-                            <button @click="confirmDelete(product)"
-                                class="text-red-600 hover:underline">Delete</button>
+                            <button @click="confirmDelete(product)" class="text-red-600 hover:underline">Delete</button>
                         </td>
                     </tr>
                 </tbody>
@@ -96,55 +95,55 @@
         </div>
     </div>
 
-<div v-if="isLoggingOut" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-  <div class="bg-white rounded-lg p-6 flex items-center gap-3 shadow-lg">
-    <svg class="animate-spin h-5 w-5 text-emerald-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-      <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-      <path class="opacity-75" fill="currentColor"
-        d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z" />
-    </svg>
-    <span class="text-emerald-700 font-medium">Logging out...</span>
-  </div>
-</div>
-
-<div v-if="showConfirmDelete" class="fixed inset-0 flex justify-center items-center bg-black bg-opacity-50">
-    <div class="bg-white p-6 rounded-lg shadow-lg max-w-sm w-full">
-        <h3 class="text-xl font-bold mb-4 text-red-600">Confirm Deletion</h3>
-        <p class="mb-4">Are you sure you want to delete <strong>{{ productToDelete?.name }}</strong>?</p>
-        <div class="flex justify-between">
-            <button @click="deleteProduct" class="bg-red-600 text-white py-2 px-4 rounded-lg hover:bg-red-700">
-                Yes, Delete
-            </button>
-            <button @click="showConfirmDelete = false" class="bg-gray-300 text-black py-2 px-4 rounded-lg">
-                Cancel
-            </button>
+    <div v-if="isLoggingOut" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+        <div class="bg-white rounded-lg p-6 flex items-center gap-3 shadow-lg">
+            <svg class="animate-spin h-5 w-5 text-emerald-600" xmlns="http://www.w3.org/2000/svg" fill="none"
+                viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z" />
+            </svg>
+            <span class="text-emerald-700 font-medium">Logging out...</span>
         </div>
     </div>
-</div>
 
-<!-- Modal Edit Product -->
-<div v-if="showEditModal" class="fixed inset-0 flex justify-center items-center bg-black bg-opacity-50">
-    <div class="bg-white p-6 rounded-lg shadow-lg max-w-sm w-full">
-        <h3 class="text-xl font-bold mb-4">Edit Product</h3>
-        <form @submit.prevent="handleEditProduct">
-            <div class="mb-4">
-                <input v-model="productToEdit.name" type="text" placeholder="Product Name"
-                    class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500"
-                    required />
-            </div>
-            <div class="mb-4">
-                <input v-model="productToEdit.quantity" type="number" placeholder="Product Quantity"
-                    class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500"
-                    required />
-            </div>
+    <div v-if="showConfirmDelete" class="fixed inset-0 flex justify-center items-center bg-black bg-opacity-50">
+        <div class="bg-white p-6 rounded-lg shadow-lg max-w-sm w-full">
+            <h3 class="text-xl font-bold mb-4 text-red-600">Confirm Deletion</h3>
+            <p class="mb-4">Are you sure you want to delete <strong>{{ productToDelete?.name }}</strong>?</p>
             <div class="flex justify-between">
-                <button type="submit" class="bg-emerald-600 text-white py-2 px-4 rounded-lg">Save Changes</button>
-                <button @click="showEditModal = false"
-                    class="bg-gray-300 text-black py-2 px-4 rounded-lg">Cancel</button>
+                <button @click="deleteProduct" class="bg-red-600 text-white py-2 px-4 rounded-lg hover:bg-red-700">
+                    Yes, Delete
+                </button>
+                <button @click="showConfirmDelete = false" class="bg-gray-300 text-black py-2 px-4 rounded-lg">
+                    Cancel
+                </button>
             </div>
-        </form>
+        </div>
     </div>
-</div>
+
+    <!-- Modal Edit Product -->
+    <div v-if="showEditModal" class="fixed inset-0 flex justify-center items-center bg-black bg-opacity-50">
+        <div class="bg-white p-6 rounded-lg shadow-lg max-w-sm w-full">
+            <h3 class="text-xl font-bold mb-4">Edit Product</h3>
+            <form @submit.prevent="handleEditProduct">
+                <div class="mb-4">
+                    <input v-model="productToEdit.name" type="text" placeholder="Product Name"
+                        class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                        required />
+                </div>
+                <div class="mb-4">
+                    <input v-model="productToEdit.quantity" type="number" placeholder="Product Quantity"
+                        class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                        required />
+                </div>
+                <div class="flex justify-between">
+                    <button type="submit" class="bg-emerald-600 text-white py-2 px-4 rounded-lg">Save Changes</button>
+                    <button @click="showEditModal = false"
+                        class="bg-gray-300 text-black py-2 px-4 rounded-lg">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
 
 
 </template>
@@ -186,7 +185,7 @@ const itemsPerPage = 5
 const token = localStorage.getItem('accessToken')
 
 const fetchProductsFromAPI = async () => {
-   
+
     try {
         const response = await axios.get('http://localhost:3000/v.01/product?page=1&pageSize=10&id=0&search', {
             headers: {
@@ -215,7 +214,7 @@ const addProduct = async (name: string, quantity: number) => {
         quantity,
         created_at: new Date().toISOString(),
     }
-    
+
     products.value.push(newProductItem)
 
     try {
@@ -324,13 +323,13 @@ const formatDate = (date: string) => {
 const isLoggingOut = ref(false)
 
 const logout = () => {
-    isLoggingOut.value = true      
+    isLoggingOut.value = true
     localStorage.removeItem('accessToken')
     localStorage.removeItem('refreshToken')
 
     setTimeout(() => {
         isLoggingOut.value = false
-        router.replace('/') 
+        router.replace('/')
     }, 1500)
 }
 
@@ -360,9 +359,13 @@ const handleEditProduct = async () => {
             })
 
             // Update data produk di tampilan setelah berhasil
-            const index = products.value.findIndex(product => product.id === productToEdit.value?.id)
+            const index = products.value.findIndex(p => p.id === updatedProduct.id)
             if (index !== -1) {
-                products.value[index] = { ...updatedProduct, created_at: products.value[index].created_at }
+                products.value[index] = {
+                    ...products.value[index],
+                    name: updatedProduct.name,
+                    quantity: updatedProduct.jumlah
+                }
             }
 
             showEditModal.value = false
