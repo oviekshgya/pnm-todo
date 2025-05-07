@@ -75,7 +75,7 @@
           </div>
   
           <div v-if="formError" class="text-red-500 text-sm text-center">
-            All fields are required and password must meet criteria.
+            {{ errorMessage }}
           </div>
   
           <button
@@ -140,16 +140,20 @@
       isPasswordsMatch.value
     )
   })
+
+const errorMessage = ref('')
   
 const handleRegister = async () => {
   if (!isPasswordsMatch.value) {
     passwordMismatch.value = true
     formError.value = true
+    errorMessage.value = 'Passwords do not match.'
     return
   }
 
   passwordMismatch.value = false
   formError.value = false
+  errorMessage.value = ''
   isLoading.value = true
 
   try {
@@ -158,7 +162,7 @@ const handleRegister = async () => {
       headers: {
         'Content-Type': 'application/json',
         'X-API-KEY': 'pnm',
-        'Authorization': 'Basic cG5tOnBubTEyMw==' 
+        'Authorization': 'Basic cG5tOnBubTEyMw=='
       },
       body: JSON.stringify({
         name: name.value,
@@ -167,25 +171,25 @@ const handleRegister = async () => {
       })
     })
 
-    if (!response.ok) {
-      const errorData = await response.json()
-      console.error('Register failed:', errorData)
+    const result = await response.json()
+
+    if (!response.ok || result.error) {
+      errorMessage.value = result.message || 'Registration failed.'
       formError.value = true
-      isLoading.value = false
       return
     }
 
-    const result = await response.json()
     console.log('Registration successful:', result)
-
     router.push('/')
   } catch (error) {
     console.error('Error during registration:', error)
+    errorMessage.value = 'Network or server error.'
     formError.value = true
   } finally {
     isLoading.value = false
   }
 }
+
 
 
   </script>
