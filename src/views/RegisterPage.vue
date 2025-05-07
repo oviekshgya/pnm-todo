@@ -141,23 +141,53 @@
     )
   })
   
-  const handleRegister = async () => {
-    if (!isPasswordsMatch.value) {
-      passwordMismatch.value = true
+const handleRegister = async () => {
+  if (!isPasswordsMatch.value) {
+    passwordMismatch.value = true
+    formError.value = true
+    return
+  }
+
+  passwordMismatch.value = false
+  formError.value = false
+  isLoading.value = true
+
+  try {
+    const response = await fetch('http://localhost:3000/v.01/create', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-API-KEY': 'pnm',
+        'Authorization': 'Basic cG5tOnBubTEyMw==' 
+      },
+      body: JSON.stringify({
+        name: name.value,
+        email: email.value,
+        password: password.value
+      })
+    })
+
+    if (!response.ok) {
+      const errorData = await response.json()
+      console.error('Register failed:', errorData)
       formError.value = true
+      isLoading.value = false
       return
     }
-  
-    passwordMismatch.value = false
-    formError.value = false
-  
-    isLoading.value = true
-    setTimeout(() => {
-      isLoading.value = false
-    //   alert(`Welcome, ${name.value}!`)
-      router.push('/')
-    }, 2000)
+
+    const result = await response.json()
+    console.log('Registration successful:', result)
+
+    router.push('/')
+  } catch (error) {
+    console.error('Error during registration:', error)
+    formError.value = true
+  } finally {
+    isLoading.value = false
   }
+}
+
+
   </script>
   
   <style scoped>
