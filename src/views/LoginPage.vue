@@ -50,7 +50,8 @@
   
         <p class="mt-6 text-center text-sm text-gray-600">
           Don't have an account?
-          <a href="#" class="text-indigo-600 hover:underline">Register</a>
+          <router-link to="/register"><a href="#" class="text-indigo-600 hover:underline">Register</a></router-link>
+          
         </p>
       </div>
     </div>
@@ -65,7 +66,6 @@
   const loginError = ref(false)
   
   const handleLogin = () => {
-    // Simulasi login (ganti dengan real API)
     if (email.value === 'admin@example.com' && password.value === '123456') {
       alert('Login sukses!')
       loginError.value = false
