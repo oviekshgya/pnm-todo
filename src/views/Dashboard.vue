@@ -133,7 +133,8 @@
 
                 </div>
                 <div class="mb-4">
-                    <input v-model="productToEdit.quantity" type="number" placeholder="Product Quantity"
+                    <input v-if="productToEdit" v-model="productToEdit.quantity" type="number"
+                        placeholder="Product Quantity"
                         class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500"
                         required />
                 </div>
@@ -270,7 +271,9 @@ const deleteProduct = async () => {
             throw new Error('Gagal menghapus produk')
         }
 
-        const index = products.value.findIndex(p => p.id === productToDelete.value.id)
+        const index = products.value.findIndex(p => p.id === productToDelete.value?.id)
+
+        
         if (index !== -1) {
             products.value.splice(index, 1)
         }
