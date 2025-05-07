@@ -64,7 +64,7 @@
                         <td class="px-4 py-2">{{ formatDate(product.created_at) }}</td>
                         <td class="px-4 py-2 flex gap-2">
                             <button @click="editProduct(product)" class="text-blue-600 hover:underline">Edit</button>
-                            <button @click="confirmDelete(product.id)"
+                            <button @click="confirmDelete(product)"
                                 class="text-red-600 hover:underline">Delete</button>
                         </td>
                     </tr>
@@ -156,7 +156,7 @@ const searchQuery = ref('')
 const sortOrder = ref('nameAsc')
 const showCreateModal = ref(false)
 const showConfirmDelete = ref(false)
-const productToDelete = ref<number | null>(null)
+const productToDelete = ref<Product | null>(null)
 const currentPage = ref(1)
 const itemsPerPage = 5
 const token = localStorage.getItem('accessToken')
@@ -219,8 +219,8 @@ const handleCreateProduct = () => {
     showCreateModal.value = false
 }
 
-const confirmDelete = (id: number) => {
-    productToDelete.value = id
+const confirmDelete = (product: Product) => {
+    productToDelete.value = product
     showConfirmDelete.value = true
 }
 
