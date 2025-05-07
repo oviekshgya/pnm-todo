@@ -122,6 +122,30 @@
     </div>
 </div>
 
+<!-- Modal Edit Product -->
+<div v-if="showEditModal" class="fixed inset-0 flex justify-center items-center bg-black bg-opacity-50">
+    <div class="bg-white p-6 rounded-lg shadow-lg max-w-sm w-full">
+        <h3 class="text-xl font-bold mb-4">Edit Product</h3>
+        <form @submit.prevent="handleEditProduct">
+            <div class="mb-4">
+                <input v-model="productToEdit.name" type="text" placeholder="Product Name"
+                    class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                    required />
+            </div>
+            <div class="mb-4">
+                <input v-model="productToEdit.quantity" type="number" placeholder="Product Quantity"
+                    class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                    required />
+            </div>
+            <div class="flex justify-between">
+                <button type="submit" class="bg-emerald-600 text-white py-2 px-4 rounded-lg">Save Changes</button>
+                <button @click="showEditModal = false"
+                    class="bg-gray-300 text-black py-2 px-4 rounded-lg">Cancel</button>
+            </div>
+        </form>
+    </div>
+</div>
+
 
 </template>
 
@@ -310,6 +334,45 @@ const logout = () => {
     }, 1500)
 }
 
+const showEditModal = ref(false) // Flag untuk menampilkan modal edit
+const productToEdit = ref<Product | null>(null) // Produk yang sedang diedit
+
+const editProduct = (product: Product) => {
+    productToEdit.value = { ...product } // Menyalin data produk ke object yang bisa diedit
+    showEditModal.value = true
+}
+
+const handleEditProduct = async () => {
+    if (productToEdit.value) {
+        const updatedProduct = {
+            id: productToEdit.value.id,
+            name: productToEdit.value.name,
+            jumlah: productToEdit.value.quantity,
+        }
+
+        try {
+            await axios.put('http://localhost:3000/v.01/product/update', updatedProduct, {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-API-KEY': 'pnm',
+                    'Authorization': `Bearer ${token}`,
+                },
+            })
+
+            // Update data produk di tampilan setelah berhasil
+            const index = products.value.findIndex(product => product.id === productToEdit.value?.id)
+            if (index !== -1) {
+                products.value[index] = { ...updatedProduct, created_at: products.value[index].created_at }
+            }
+
+            showEditModal.value = false
+            productToEdit.value = null
+            console.log('Produk berhasil diupdate.')
+        } catch (error) {
+            console.error('Gagal mengupdate produk:', error)
+        }
+    }
+}
 
 
 
