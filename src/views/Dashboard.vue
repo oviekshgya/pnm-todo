@@ -126,9 +126,11 @@
             <h3 class="text-xl font-bold mb-4">Edit Product</h3>
             <form @submit.prevent="handleEditProduct">
                 <div class="mb-4">
-                    <input v-model="productToEdit.name" type="text" placeholder="Product Name"
+                    <input v-if="productToEdit" v-model="productToEdit.name" type="text" placeholder="Product Name"
                         class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500"
                         required />
+
+
                 </div>
                 <div class="mb-4">
                     <input v-model="productToEdit.quantity" type="number" placeholder="Product Quantity"
